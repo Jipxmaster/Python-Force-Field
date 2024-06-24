@@ -1,38 +1,41 @@
-import pygame
-import molecule
-import math
+import pygame                           # Querido pygame
+from interface import Draw              # Todo lo relacionado a la interfaz
+from atom import Atom                   # Clase átomo
 
-# pygame setup, no es muy relevante
-pygame.init()
-screen = pygame.display.set_mode((640, 480))
-clock = pygame.time.Clock()
+res = (640, 480)                        # Resolución de pantalla
+
+pygame.init()                           # Inicialización de pygame
+screen = pygame.display.set_mode(res)   # Colocar resolución
+clock = pygame.time.Clock()             # Objeto reloj
 running = True
-counter = 0
+
+# ---- V A R I A B L E S   I N I C I A L E S ----
+h_1 = Atom((-2, -1), 1.0008, "H")
+h_2 = Atom((0, 0), 1.0008, "O")
+h_1.sprivean(200, 50, h_2)
+time = 0
 
 while running:
-    # Events in pygame
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pygame.event.get():    # Revisar eventos
+        if event.type == pygame.QUIT:   # Salir del bucle principal al quitar la ventana
             running = False
 
-    # All screen modifications happens here, vacía la pantalla
-    screen.fill((0, 0, 0))
-    molecule.Screen.grill(screen)
+    screen.fill((0, 0, 0))              # Vaciar la pantalla con color negro
 
-    # Cálculo de posición de los hidrógenos (utilizando valores arbitrarios)
-    # Está basado en tiempo "counter"
-    x = math.sin(52.26 * (math.pi / 180)) * (0.9572 - (math.sin(counter / 10) * 0.3) - 0.3)
-    y = math.cos(52.26 * (math.pi / 180)) * (0.9572 - (math.sin(counter / 10) * 0.3) - 0.3)
+    # ---- E M P I E Z A   L A   M A G I A ----
+    # -----------------------------------------
+    Draw.grill(screen, res, 40)
 
-    # Dibujo de los átomos
-    molecule.Screen.draw(screen, (0, 0), (255, 0, 0))  # Oxygen
-    molecule.Screen.draw(screen, (-x, -y), (255, 255, 255))  # Hydrogen
-    molecule.Screen.draw(screen, (x, -y), (255, 255, 255))  # Hydrogen
+    h_1.compute(time)
 
-    # Flip frame and frame limiter, aplica los cambios del dibujado
-    pygame.display.flip()
-    clock.tick(60)
-    counter += 1  # Incrementar el tiempo "counter"
+    h_1.draw(screen)
+    h_2.draw(screen)
 
-# End of program
-pygame.quit()
+    # -----------------------------------------
+    # ---- T E R M I N A   L A   M A G I A ----
+
+    pygame.display.flip()               # Cambio de buffer
+    clock.tick(50)                      # 50 Hz hace más fácil el cálculo de tiempos
+    time += 1
+
+pygame.quit()                           # Cerrar pygame y terminar el programa
