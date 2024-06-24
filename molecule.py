@@ -1,29 +1,47 @@
-import pygame
+k = 1.380649 * (10 ** -23)                              # Constante de Boltzmann
+pi = 3.1415926535897932384626                           # Número pi
+avg = 6.02214129 * (10 ** 23)                           # Número de avogadro
+seed = 15                                               # Semilla para números aleatorios
 
 
-class Screen:
+def dmb(t, m, option):                                  # Distribución de Maxwell-Boltzmann (DMB)
+    if option == 1:                                     # Opción 1: Velocidad más probable (VMS)
+        v = (2 * k * t) / m
+    elif option == 2:                                   # Opción 2: Velocidad media (VM)
+        v = (8 * k * t) / (pi * m)
+    else:                                               # Sin selección: Media cuadrátiva de velocidad (VMD)
+        v = (3 * k * t) / m
+    return v ** 0.5                                     # Terminar la ecuación con una raíz
+
+
+def gnp(a):                                             # Generador de números pseudoaleatorios (GNP) [0-255]
+    global seed
+    a = a ^ (a << 13)                                   # Método XORSHIFT
+    a = a ^ (a >> 17)                                   # Desplaza n bits a cualquiera de los dos lados, luego
+    a = a ^ (a << 5)                                    # opera XOR con el resultado anterior
+    seed = a                                            # Actualizar variable seed
+    a = (a & 511) >> 1                                  # Seleccionar los bits (1 - 8)
+    return a                                            # Retorna la siguiente iteración
+
+
+def gvi(v, q):                                          # Generador de velocidades individuales (GVI)
+    velocities = []
+    for i in range(q):                                  # Generar q (quantity) veces
+        rnd = gnp(seed)                                 # Iterar GNP
+        vel = v + ((v * 0.1) / 128) * (128 - rnd)       # Alterar v (velocidad) con valor aleatorio
+        velocities.append(vel)                          # Añadir el resultado
+    return velocities                                   # Retornar un arreglo de resultados
+
+
+class Simkit:                                           # Clase SimKit: Utiliza las funciones definidas anteriormente
+    @classmethod
+    def random(cls):                                    # Generar números aleatorios
+        return gnp(seed)
+
+    @classmethod
+    def distribute(cls, velocity, quantity):            # Generar variaciones de una velocidad determinada
+        return gvi(velocity, quantity)
+
     @staticmethod
-    # Para dibujar la rejilla de líneas blancas
-    def grill(screen):
-        res = [640, 480]
-        size = 80
-        cx = int(res[0] / size)
-        cy = int(res[1] / size)
-        # bucles para dibujar las rayas
-        while cx != 0:
-            pygame.draw.line(screen, (255, 255, 255), (cx * size, 0), (cx * size, res[1]))
-            cx -= 1
-        while cy != 0:
-            pygame.draw.line(screen, (255, 255, 255), (0, cy * size), (res[0], cy * size))
-            cy -= 1
-    # Para dibujar la partícula o molécula
-
-    @staticmethod
-    def draw(screen, pos, color):
-        # La resolución se divide en dos para obtener el centro de la pantalla
-        # de ahí alterar con las coordenadas del plano cartesiano
-        res = [640, 480]
-        size = 80  # tamaño de los cuadros
-        dot_size = 20  # tamaño del punto
-        position = (res[0]/2 + (pos[0] * size * 2), res[1]/2 - (pos[1] * size * 2))
-        pygame.draw.circle(screen, color, position, dot_size)
+    def velocity(temp, part, sele=1):                   # Generar velocidad con distribuciób de Maxwell-Boltzmann
+        return dmb(temp, part, sele)
