@@ -11,3 +11,6 @@ Interface
 Mol
   -Responsable de hacer los cálculos de velocidades con la distribución de boltzmann.
   -También guarda algunos constantes, como el pi o el número de avogadro.
+
+Notas:
+Falta comentar algunas líneas de código
