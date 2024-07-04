@@ -1,4 +1,3 @@
-import pygame
 from pygame import draw                                     # Función dibujar
 
 elements = {"H": "WHITE", "O": "RED"}                       # Colores según átomo
@@ -46,16 +45,3 @@ class Draw:
         x1 = int((resolution[0] / 2) + (finish[0] * sq))    # Coordenadas del segundo punto
         y1 = int((resolution[1] / 2) - (finish[1] * sq))
         draw.line(screen, y, (x0, y0), (x1, y1), 5)         # Dibujado de línea
-
-
-class Print:
-    def __init__(self, text, coord):
-        font = pygame.font.Font('freesansbold.ttf', 20)
-        text = font.render(text, True, "WHITE")
-        rect = text.get_rect()
-        rect.center = coord
-        self.text = text
-        self.rect = rect
-
-    def print(self, screen):
-        screen.blit(self.text, self.rect)

@@ -5,6 +5,7 @@ seed = 15                                               # Semilla para números 
 
 
 def dmb(t, m, option):                                  # Distribución de Maxwell-Boltzmann (DMB)
+    m = m / (avg * 1000)
     if option == 1:                                     # Opción 1: Velocidad más probable (VMS)
         v = (2 * k * t) / m
     elif option == 2:                                   # Opción 2: Velocidad media (VM)
