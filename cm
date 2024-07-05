@@ -1,0 +1,66 @@
+import math
+
+class MoleculaAgua:
+    def __init__(self, coordenadas, pesos):
+        """
+        Inicializa la clase con las coordenadas y los pesos.
+        :param coordenadas: Lista de tuplas con las coordenadas de los átomos [(x1, y1), (x2, y2), (x3, y3)]
+        :param pesos: Lista de pesos de los átomos [peso1, peso2, peso3]
+        """
+        self.coordenadas = coordenadas
+        self.pesos = pesos
+
+    def calcular_centro_de_masa(self):
+        """
+        Calcula el centro de masa de la molécula.
+        :return: Tupla con las coordenadas del centro de masa (x_cm, y_cm)
+        """
+        suma_pesos = sum(self.pesos)
+        
+        x_cm = sum(coord[0] * peso for coord, peso in zip(self.coordenadas, self.pesos)) / suma_pesos
+        y_cm = sum(coord[1] * peso for coord, peso in zip(self.coordenadas, self.pesos)) / suma_pesos
+        
+        return (x_cm, y_cm)
+
+    def rotar_molecula(self, angulo):
+        """
+        Rota la molécula respecto a su centro de masa.
+        :param angulo: Ángulo de rotación en grados.
+        :return: Lista de nuevas coordenadas tras la rotación.
+        """
+        angulo_rad = math.radians(angulo)
+        cos_ang = math.cos(angulo_rad)
+        sin_ang = math.sin(angulo_rad)
+        
+        centro_de_masa = self.calcular_centro_de_masa()
+        
+        nuevas_coordenadas = []
+        for x, y in self.coordenadas:
+            # Trasladar el punto al origen
+            x_trasladado = x - centro_de_masa[0]
+            y_trasladado = y - centro_de_masa[1]
+            
+            # Aplicar la rotación
+            x_rotado = x_trasladado * cos_ang - y_trasladado * sin_ang
+            y_rotado = x_trasladado * sin_ang + y_trasladado * cos_ang
+            
+            # Trasladar el punto de regreso
+            x_nuevo = x_rotado + centro_de_masa[0]
+            y_nuevo = y_rotado + centro_de_masa[1]
+            
+            nuevas_coordenadas.append((x_nuevo, y_nuevo))
+        
+        return nuevas_coordenadas
+
+# Ejemplo de uso
+coordenadas = [(0.0, 0.0), (0.9584, 0.0), (-0.2399872, 0.927297)]
+pesos = [16, 1, 1]
+
+molecula_agua = MoleculaAgua(coordenadas, pesos)
+
+centro_de_masa = molecula_agua.calcular_centro_de_masa()
+print(f"Centro de masa de la molécula de agua: {centro_de_masa}")
+
+# Rotar la molécula 45 grados
+nuevas_coordenadas = molecula_agua.rotar_molecula(45)
+print(f"Nuevas coordenadas tras rotación de 45 grados: {nuevas_coordenadas}")
