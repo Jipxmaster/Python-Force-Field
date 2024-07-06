@@ -1,6 +1,6 @@
 from pygame import draw                                     # Función dibujar
 
-elements = {"H": "WHITE", "O": "RED"}                       # Colores según átomo
+elements = {"H": "WHITE", "O": "RED", "C": "GREEN"}         # Colores según átomo
 resolution = []                                             # Resolución por definir
 sq = 0                                                      # Tamaño de cuadrado "square size" (sq)
 
